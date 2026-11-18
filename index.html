@@ -303,6 +303,18 @@ body.visitor .mem-only{display:none}
 [aria-checked=true] .switch{background:#4DB881}
 [aria-checked=true] .switch::after{transform:translateX(18px)}
 
+.pl{display:block;width:100%;height:100%;position:relative}
+.pl .disc{position:absolute;inset:12%;border-radius:50%;overflow:hidden;background:#05060b;box-shadow:0 7px 16px rgba(45,35,85,.30),inset -7px -9px 16px rgba(0,0,0,.38),inset 3px 3px 8px rgba(255,255,255,.12)}
+.pl .disc::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.22),transparent 45%,rgba(0,0,0,.28) 100%);pointer-events:none}
+.pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(var(--z,1.2))}
+.pl.ph-saturn .disc{inset:4%}
+.pl.ph-saturn img{object-fit:contain;transform:scale(1.95)}
+.pl.ph-sun .disc{box-shadow:0 0 22px rgba(255,150,40,.55),0 6px 14px rgba(45,35,85,.2)}
+.pl.ecl svg{width:100%;height:100%;filter:drop-shadow(0 5px 8px rgba(45,35,85,.28))}
+.tint .orb .pl{filter:blur(2.5px) saturate(.9)}
+.tint .orb .pl .disc{box-shadow:none}
+.tint .orb .pl.ecl{filter:blur(9px)}
+.credit{display:block;margin-top:6px;font-size:11.5px;font-weight:600;color:var(--faint)}
 .foot{text-align:center;color:var(--faint);font-size:12.5px;font-weight:600;margin-top:40px}
 
 /* ---------- desktop ---------- */
@@ -497,7 +509,7 @@ body.visitor .mem-only{display:none}
       <a class="tile" href="#sadesati" style="--tb:#FCEAF1"><div class="ill" data-planet="Saturn"></div><h3>Sade Sati</h3><p>Saturn's seven years</p></a>
       <a class="tile" href="#manglik" style="--tb:#FDECE9"><div class="ill" data-planet="Mars"></div><h3>Manglik</h3><p>Mars check for marriage</p></a>
     </div>
-    <p class="foot">Astra Kundli · Vedic astrology, explained simply</p>
+    <p class="foot">Astra Kundli · Vedic astrology, explained simply<span class="credit">Planet photos: NASA, ESA, JPL, public domain.</span></p>
   </div>
 </section>
 
@@ -681,7 +693,7 @@ body.visitor .mem-only{display:none}
       <button role="switch" aria-checked="true" data-switch>Daily guidance at 7 AM <span class="switch"></span></button>
       <button role="switch" aria-checked="false" data-visitor-switch>Preview as first visit <span class="switch"></span></button>
     </div>
-    <p class="foot">Mockup v4 · data for a sample profile</p>
+    <p class="foot">Mockup v4 · data for a sample profile<span class="credit">Planet photos: NASA, ESA, JPL, public domain.</span></p>
   </div>
 </section>
 </main>
@@ -749,7 +761,7 @@ const P={
  Ketu:{c:'#38ADA3',l:'#8ED6CE',d:'#23908A',bg:'#E2F4F2',ab:'Ke'}
 };
 let uid=0;
-function planet(n){
+function planetSvg(n){
   const p=P[n], id='cp'+(++uid);
   let r=38, pre='', deco='', post='';
   const dots='<circle cx="30" cy="40" r="2.2" fill="#fff" opacity=".55"/><circle cx="62" cy="68" r="1.6" fill="#fff" opacity=".5"/>';
@@ -777,6 +789,26 @@ function planet(n){
      deco=`<path d="M34 32 V46 A16 16 0 1 0 66 46 V32" fill="none" stroke="${p.l}" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="30" r="4.5" fill="${p.l}"/><circle cx="66" cy="30" r="4.5" fill="${p.l}"/>`+dots;break;
   }
   return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><clipPath id="${id}"><circle cx="50" cy="50" r="${r}"/></clipPath></defs>${pre}<circle cx="50" cy="50" r="${r}" fill="${p.c}"/><g clip-path="url(#${id})">${deco}<path d="M${50-r} 50 A${r} ${r} 0 0 1 50 ${50-r} A${r*1.25} ${r*1.25} 0 0 0 ${50-r*.55} ${50+r*.1}Z" fill="#fff" opacity=".18"/></g>${post}</svg>`;
+}
+const PH={
+ Moon:['https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Moon_nearside_LRO_5000.jpg/330px-Moon_nearside_LRO_5000.jpg',1.12],
+ Sun:['https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg/330px-The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg',1.12],
+ Mars:['https://commons.wikimedia.org/wiki/Special:FilePath/Mars_23_aug_2003_hubble.jpg?width=330',1.45],
+ Jupiter:['https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/330px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg',1.3],
+ Saturn:['https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/330px-Saturn_during_Equinox.jpg',1],
+ Venus:['https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Venus_from_Mariner_10.jpg/330px-Venus_from_Mariner_10.jpg',1.3],
+ Mercury:['https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/330px-Mercury_in_true_color.jpg',1.3]
+};
+function eclipse(n){
+  const id='ec'+(++uid);
+  if(n==='Rahu') return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><radialGradient id="${id}g" cx="50%" cy="50%" r="50%"><stop offset="62%" stop-color="#FFC46B" stop-opacity=".95"/><stop offset="72%" stop-color="#FF9A3C" stop-opacity=".55"/><stop offset="100%" stop-color="#FF9A3C" stop-opacity="0"/></radialGradient><radialGradient id="${id}d" cx="38%" cy="34%" r="75%"><stop offset="0" stop-color="#2A2540"/><stop offset="1" stop-color="#0B0A14"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#${id}g)"/><circle cx="50" cy="50" r="31" fill="url(#${id}d)"/><circle cx="50" cy="50" r="31" fill="none" stroke="#FFE2A8" stroke-width="1.2" opacity=".85"/></svg>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><radialGradient id="${id}m" cx="36%" cy="32%" r="80%"><stop offset="0" stop-color="#D2694A"/><stop offset=".55" stop-color="#9A3B27"/><stop offset="1" stop-color="#4B1714"/></radialGradient><radialGradient id="${id}h" cx="50%" cy="50%" r="50%"><stop offset="70%" stop-color="#E58A5E" stop-opacity=".45"/><stop offset="100%" stop-color="#E58A5E" stop-opacity="0"/></radialGradient></defs><circle cx="50" cy="50" r="46" fill="url(#${id}h)"/><circle cx="50" cy="50" r="33" fill="url(#${id}m)"/><circle cx="41" cy="42" r="5" fill="#6B2418" opacity=".35"/><circle cx="60" cy="58" r="6.5" fill="#6B2418" opacity=".3"/><circle cx="56" cy="38" r="3" fill="#6B2418" opacity=".3"/></svg>`;
+}
+function plFb(img){const w=img.closest('.pl');if(w&&!w.dataset.fb){w.dataset.fb=1;w.innerHTML=planetSvg(w.dataset.n);}}
+function planet(n){
+  if(n==='Rahu'||n==='Ketu') return `<span class="pl ecl" data-n="${n}">${eclipse(n)}</span>`;
+  const h=PH[n]; if(!h) return planetSvg(n);
+  return `<span class="pl ph-${n.toLowerCase()}" data-n="${n}"><span class="disc"><img loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" src="${h[0]}" style="--z:${h[1]}" onerror="plFb(this)"></span></span>`;
 }
 function fillPlanets(root){(root||document).querySelectorAll('[data-planet]').forEach(el=>{if(!el.firstChild)el.innerHTML=planet(el.dataset.planet);});}
 
